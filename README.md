@@ -1,7 +1,14 @@
 # Very simple PostgreSQL async pool api for nim
 
+`nimble install pg`
 
-## Open a connection:
+![Github Actions](https://github.com/treeform/pg/workflows/Github%20Actions/badge.svg)
+
+[API reference](https://nimdocs.com/treeform/pg)
+
+This library has no dependencies other than the Nim standard libarary.
+
+## About
 
 To open a pool with 10 connections simply use:
 ```nim
@@ -9,7 +16,6 @@ let pg = newAsyncPool("localhost", "user", "password", "dbname", 10)
 ```
 
 By using a connection pool, 10 connections are opened and when your application makes a query a free connection is taking from the pool. Otherwise your query will wait for a free connection to become available. This allows your application to run any number of queries at once. By default PostgreSQL will accept 100 connections. PostgreSQL can run multiple queries at once as well but they will start impacting each other especially if they read or write to same tables, or you have run out of CPU cores.
-
 
 You can open a single connection with `db_postgres`'s api:
 ```nim
@@ -62,4 +68,3 @@ Run query but don't care about the results or when it will finish:
 ```nim
 asyncCheck pg.exec(sql"UPDATE TABLE foo SET a=1")
 ```
-
