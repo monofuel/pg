@@ -2,8 +2,6 @@
 
 import asyncdispatch
 include db_postgres
-import print
-
 
 type
   ## db pool
@@ -13,7 +11,6 @@ type
 
   ## Excpetion to catch on errors
   PGError* = object of Exception
-
 
 proc newAsyncPool*(
     connection,
@@ -30,13 +27,11 @@ proc newAsyncPool*(
     result.conns.add conn
     result.busy.add false
 
-
 proc checkError(db: DbConn) =
   ## Raises a DbError exception.
   var message = pqErrorMessage(db)
   if message.len > 0:
     raise newException(PGError, $message)
-
 
 proc rows*(
   db: DbConn,
@@ -64,7 +59,6 @@ proc rows*(
       result.add row
     pqclear(pqresutl)
 
-
 proc getFreeConnIdx(pool: AsyncPool): Future[int] {.async.} =
   ## Wait for a free connection and return it.
   while true:
@@ -74,11 +68,9 @@ proc getFreeConnIdx(pool: AsyncPool): Future[int] {.async.} =
         return conIdx
     await sleepAsync(100)
 
-
 proc returnConn(pool: AsyncPool, conIdx: int) =
   ## Make the connection as free after using it and getting results.
   pool.busy[conIdx] = false
-
 
 proc rows*(
     pool: AsyncPool,
@@ -90,7 +82,6 @@ proc rows*(
   result = await rows(pool.conns[conIdx], query, args)
   pool.returnConn(conIdx)
 
-
 proc exec*(
     pool: AsyncPool,
     query: SqlQuery,
@@ -100,5 +91,3 @@ proc exec*(
   let conIdx = await pool.getFreeConnIdx()
   discard await rows(pool.conns[conIdx], query, args)
   pool.returnConn(conIdx)
-
-
