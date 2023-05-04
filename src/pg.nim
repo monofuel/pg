@@ -1,7 +1,7 @@
 # Simple async driver for postgress
 
 import asyncdispatch
-include db_postgres
+include db_connector/db_postgres
 
 type
   ## db pool
