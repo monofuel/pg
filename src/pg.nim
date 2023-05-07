@@ -1,7 +1,12 @@
 # Simple async driver for postgress
 
 import asyncdispatch
-include db_connector/db_postgres
+
+when (NimMajor, NimMinor, NimPatch) >= (1, 7, 3):
+  include db_connector/db_postgres
+else:
+  include db_postgres
+
 
 type
   ## db pool
