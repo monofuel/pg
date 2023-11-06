@@ -66,6 +66,7 @@ proc getFreeConnIdx(pool: AsyncPool): Future[int] {.async.} =
       if not pool.busy[conIdx]:
         pool.busy[conIdx] = true
         return conIdx
+    echo "Warning: all pg threads busy, waiting..."
     await sleepAsync(100)
 
 proc returnConn(pool: AsyncPool, conIdx: int) =
